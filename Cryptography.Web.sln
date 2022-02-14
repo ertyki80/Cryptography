@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptography.Web", "Cryptography.Web\Cryptography.Web.csproj", "{690C9948-930E-4111-8EF8-1C7B7087E487}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptography.Bll", "Cryptography.Bll\Cryptography.Bll.csproj", "{A0DB093E-B758-4C88-9A46-398E673ED123}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{690C9948-930E-4111-8EF8-1C7B7087E487}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{690C9948-930E-4111-8EF8-1C7B7087E487}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{690C9948-930E-4111-8EF8-1C7B7087E487}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{690C9948-930E-4111-8EF8-1C7B7087E487}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0DB093E-B758-4C88-9A46-398E673ED123}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0DB093E-B758-4C88-9A46-398E673ED123}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0DB093E-B758-4C88-9A46-398E673ED123}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0DB093E-B758-4C88-9A46-398E673ED123}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,40 @@
+@model System.Collections.Generic.List<Cryptography.Bll.Models.FileModel>
+
+
+<h2>Folder Files:</h2>
+<table id="table-content">
+    <tr> 
+        <th> File Name </th>
+        <th> Action </th>  
+    </tr> 
+    @foreach (var item in Model){
+        <tr> 
+            <th> @item.Name</th>
+            <th> @Html.ActionLink("Process File","ProcessFile","Home",new { name = item.Name})</th>  
+        </tr>
+    }
+</table>
+<style>
+    #table-content {
+      font-family: Arial, Helvetica, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+    
+    #table-content td, #table-content th {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+    
+    #table-content tr:nth-child(even){background-color: #f2f2f2;}
+    
+    #table-content tr:hover {background-color: #ddd;}
+    
+    #table-content th {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      text-align: left;
+      background-color: #FFFFFF;
+      color: black;
+    }
+</style>
