@@ -11,7 +11,8 @@
 
     <ItemGroup>
       <Folder Include="Pages\Shared" />
-      <Folder Include="wwwroot\Files" />
+      <Folder Include="wwwroot\EncryptedFiles" />
+      <Folder Include="wwwroot\UploadedFiles" />
     </ItemGroup>
 
     <ItemGroup>
@@ -20,6 +21,10 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Cryptography.Bll\Cryptography.Bll.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Remove="wwwroot\icons\key.png" />
     </ItemGroup>
 
 </Project>

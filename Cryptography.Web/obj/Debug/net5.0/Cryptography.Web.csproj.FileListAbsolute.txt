@@ -39,6 +39,7 @@ C:\Users\Ivan\RiderProjects\Cryptography.Web\Cryptography.Web\obj\Debug\net5.0\C
 C:\Users\Ivan\RiderProjects\Cryptography.Web\Cryptography.Web\bin\Debug\net5.0\Neptuo.dll
 C:\Users\Ivan\RiderProjects\Cryptography.Web\Cryptography.Web\obj\Debug\net5.0\Razor\Views\Shared\_ValidationScriptsPartial.cshtml.g.cs
 C:\Users\Ivan\RiderProjects\Cryptography.Web\Cryptography.Web\obj\Debug\net5.0\Razor\Pages\Shared\Components\FolderListingComponent\Default.cshtml.g.cs
-C:\Users\Ivan\RiderProjects\Cryptography.Web\Cryptography.Web\obj\Debug\net5.0\Razor\Views\Home\ProcessFile.cshtml.g.cs
 C:\Users\Ivan\RiderProjects\Cryptography.Web\Cryptography.Web\bin\Debug\net5.0\Cryptography.Bll.dll
 C:\Users\Ivan\RiderProjects\Cryptography.Web\Cryptography.Web\bin\Debug\net5.0\Cryptography.Bll.pdb
+C:\Users\Ivan\RiderProjects\Cryptography.Web\Cryptography.Web\obj\Debug\net5.0\Razor\Views\Home\ProcessFileCaesarCipherDecipher.cshtml.g.cs
+C:\Users\Ivan\RiderProjects\Cryptography.Web\Cryptography.Web\obj\Debug\net5.0\Razor\Views\Home\ProcessFileCaesarCipherEncipher.cshtml.g.cs

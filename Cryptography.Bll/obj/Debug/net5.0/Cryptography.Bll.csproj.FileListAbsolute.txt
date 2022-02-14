@@ -21,3 +21,8 @@ C:\Users\Ivan\RiderProjects\Cryptography.Web\Cryptography.Bll\obj\Debug\net5.0\C
 C:\Users\Ivan\RiderProjects\Cryptography.Web\Cryptography.Bll\obj\Debug\net5.0\Cryptography.Bll.dll
 C:\Users\Ivan\RiderProjects\Cryptography.Web\Cryptography.Bll\obj\Debug\net5.0\ref\Cryptography.Bll.dll
 C:\Users\Ivan\RiderProjects\Cryptography.Web\Cryptography.Bll\obj\Debug\net5.0\Cryptography.Bll.pdb
+C:\Users\Ivan\RiderProjects\Cryptography.Web\Cryptography.Bll\bin\Debug\net5.0\Microsoft.AspNetCore.Http.dll
+C:\Users\Ivan\RiderProjects\Cryptography.Web\Cryptography.Bll\bin\Debug\net5.0\Microsoft.Extensions.Options.dll
+C:\Users\Ivan\RiderProjects\Cryptography.Web\Cryptography.Bll\bin\Debug\net5.0\Microsoft.AspNetCore.WebUtilities.dll
+C:\Users\Ivan\RiderProjects\Cryptography.Web\Cryptography.Bll\bin\Debug\net5.0\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Users\Ivan\RiderProjects\Cryptography.Web\Cryptography.Bll\bin\Debug\net5.0\Microsoft.Extensions.ObjectPool.dll

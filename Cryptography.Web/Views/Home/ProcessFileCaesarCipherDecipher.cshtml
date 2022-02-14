@@ -1,0 +1,135 @@
+@model Cryptography.Bll.Models.FileModel
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<h2>Caesar Cipher</h2>
+<br>
+<h2> File Name:  "@Model.Name" <br> </h2>
+<h2>You want to encrypt the following text:<br></h2>
+@Model.Content
+
+<br>
+<br>
+We need a key for the Caesar cipher:
+<br>
+@using (Html.BeginForm("EncryptAndDownload", "Home", FormMethod.Post, new {enctype = "multipart/form-data"}))
+{
+  <input type="hidden" name="key" id="SelectedKey" value=""/>
+  <input type="hidden" name="inputFileName" id="FileName" value="@Model.Name"/>
+  <select id="selectorOption" class="custom-select" style="width:200px;">
+    @for (var i = 0; i < 100;i++)
+    {
+      <option  value="@i" >@i</option>
+    }
+  </select>
+  <br>
+  <input type="submit" class="field__file-button" value="key" onclick="SubmitButton()">
+
+}
+
+<script>
+function GetSelectedKey(){
+  return document.getElementById("selectorOption").value;
+}
+function SubmitButton(){
+     $("#SelectedKey").val(GetSelectedKey());
+}
+</script>
+
+<style>
+    .field__file-button {
+          width: 100px;
+          height: 40px;
+          background: #1bbc9b;
+          color: #fff;
+          font-size: 1.125rem;
+          font-weight: 700;
+          display: -webkit-box;
+          display: -ms-flexbox;
+          display: flex;
+          -webkit-box-align: center;
+              -ms-flex-align: center;
+                  align-items: center;
+          -webkit-box-pack: center;
+              -ms-flex-pack: center;
+                  justify-content: center;
+          border-radius: 0 3px 3px 0;
+          cursor: pointer;
+        }
+    
+    .custom-select {
+      position: relative;
+      font-family: Arial;
+    }
+    
+    .custom-select select {
+      display: none; 
+    }
+    
+    .select-selected {
+      background-color: DodgerBlue;
+    }
+    
+    .select-selected:after {
+      position: absolute;
+      content: "";
+      top: 14px;
+      right: 10px;
+      width: 0;
+      height: 0;
+      border: 6px solid transparent;
+      border-color: #fff transparent transparent transparent;
+    }
+    
+    .select-selected.select-arrow-active:after {
+      border-color: transparent transparent #fff transparent;
+      top: 7px;
+    }
+    
+    .select-items div,.select-selected {
+      color: #ffffff;
+      padding: 8px 16px;
+      border: 1px solid transparent;
+      border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
+      cursor: pointer;
+      user-select: none;
+    }
+    
+    .select-items {
+      position: absolute;
+      background-color: DodgerBlue;
+      top: 100%;
+      left: 0;
+      right: 0;
+      z-index: 99;
+    }
+    
+    .select-hide {
+      display: none;
+    }
+    
+    .select-items div:hover, .same-as-selected {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+
+    input[type=text] {
+      width: 130px;
+      box-sizing: border-box;
+      border: 2px solid #ccc;
+      border-radius: 4px;
+      font-size: 16px;
+      background-color: white;
+      background-image: url('../icons/key.png');
+      background-position: 10px 10px; 
+      background-repeat: no-repeat;
+      padding: 12px 20px 12px 40px;
+      transition: width 0.4s ease-in-out;
+    }
+    
+    input[type=text]:focus {
+      width: 100%;
+    }
+</style>

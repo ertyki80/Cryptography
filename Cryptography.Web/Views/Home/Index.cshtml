@@ -3,7 +3,7 @@
 @using (Html.BeginForm("AddFile", "Home", FormMethod.Post, new {enctype = "multipart/form-data"}))
 {
     <div class="field__wrapper">
-        <input type="file" name="uploadedFile" id="field__file-2" class="field field__file"/>
+        <input type="file" name="uploadedFile" id="field__file-2" class="field field__file" required/>
         <label class="field__file-wrapper" for="field__file-2">
             <div class="field__file-fake">Upload file</div>
             <input type="submit" value="Proccess" class="field__file-button" />
@@ -13,8 +13,7 @@
 
 @await Component.InvokeAsync("FolderListingComponent")
 
-<script>
-</script>
+
 
 <style>
     input{ 

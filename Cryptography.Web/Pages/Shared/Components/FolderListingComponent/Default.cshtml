@@ -1,3 +1,4 @@
+@using System.Formats.Asn1
 @model System.Collections.Generic.List<Cryptography.Bll.Models.FileModel>
 
 
@@ -5,16 +6,33 @@
 <table id="table-content">
     <tr> 
         <th> File Name </th>
-        <th> Action </th>  
+        <th> Decipher </th>  
+        <th> Encipher </th>  
     </tr> 
-    @foreach (var item in Model){
-        <tr> 
-            <th> @item.Name</th>
-            <th> @Html.ActionLink("Process File","ProcessFile","Home",new { name = item.Name})</th>  
-        </tr>
-    }
+     @foreach (var item in Model){
+            <tr> 
+                <th> @item.Name</th>
+                <th > @Html.ActionLink("Caesar Cipher","ProcessFileCaesarCipherDecipher","Home",new { name = item.Name},new { @class = "linkColonm" })</th>  
+                <th > @Html.ActionLink("Caesar Cipher","ProcessFileCaesarCipherEncipher","Home",new { name = item.Name},new { @class = "linkColonm" })</th>
+            </tr>
+     }
 </table>
 <style>
+
+    .linkColonm:link,.linkColonm:visited  {
+      background-color: #1bbc9b;
+      color: white;
+      padding: 14px 25px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+    }
+    
+    
+    .linkColonm:hover, .linkColonm:active {
+      background-color: #1bbc9b;
+    }
+    
     #table-content {
       font-family: Arial, Helvetica, sans-serif;
       border-collapse: collapse;
