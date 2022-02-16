@@ -1,4 +1,3 @@
-@using System.Formats.Asn1
 @model System.Collections.Generic.List<Cryptography.Bll.Models.FileModel>
 
 
@@ -6,14 +5,16 @@
 <table id="table-content">
     <tr> 
         <th> File Name </th>
-        <th> Decipher </th>  
-        <th> Encipher </th>  
+        <th> Caesar Cipher </th>  
+        <th> Caesar Cipher </th>  
+        <th> Caesar Cipher </th> 
     </tr> 
      @foreach (var item in Model){
             <tr> 
                 <th> @item.Name</th>
-                <th > @Html.ActionLink("Caesar Cipher","ProcessFileCaesarCipherDecipher","Home",new { name = item.Name},new { @class = "linkColonm" })</th>  
-                <th > @Html.ActionLink("Caesar Cipher","ProcessFileCaesarCipherEncipher","Home",new { name = item.Name},new { @class = "linkColonm" })</th>
+                <th > @Html.ActionLink("Decipher","ProcessFileCaesarCipherDecipher","Home",new { name = item.Name},new { @class = "linkColonm" })</th>  
+                <th > @Html.ActionLink("Encipher","ProcessFileCaesarCipherEncipher","Home",new { name = item.Name},new { @class = "linkColonm" })</th>
+                <th > @Html.ActionLink("Brute Force","ProcessFileBruteForceCaesarCipherDecipher","Home",new { name = item.Name},new { @class = "linkColonm" })</th>
             </tr>
      }
 </table>

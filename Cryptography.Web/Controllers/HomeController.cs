@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Net.Mime;
 using System.Threading.Tasks;
 using Cryptography.Bll.Interfaces;
 using Cryptography.Bll.Models;
@@ -48,6 +46,17 @@ namespace Cryptography.Web.Controllers
             
             return View(fileModel);
         }
+        
+        public async Task<IActionResult> ProcessFileBruteForceCaesarCipherDecipher(string name)
+        {
+            FileModel fileModel = new FileModel()
+            {
+                Name = name,
+                Content = await _fileService.GetFileContent(name, _webHostEnvironment.WebRootPath)
+            };
+            
+            return View(fileModel);
+        }
 
         [HttpPost]
         public async Task<ActionResult > EncryptAndDownload(string inputFileName, int key)
@@ -69,6 +78,21 @@ namespace Cryptography.Web.Controllers
         {
             string filepath =
                 await _fileService.GetCaesarCipherEncryptedFile(inputFileName , _webHostEnvironment.WebRootPath, key);
+            var memory = new MemoryStream();
+            using (var stream = new FileStream(filepath, FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            var ext = Path.GetExtension(filepath).ToLowerInvariant();
+            return File(memory, GetMimeTypes()[ext], Path.GetFileName(filepath));
+        }
+        
+        [HttpPost]
+        public async Task<ActionResult> BruteForceDecipherAndDownload(string inputFileName)
+        {
+            string filepath =
+                await _fileService.GetBruteForceCaesarCipherDecryptedFile(inputFileName , _webHostEnvironment.WebRootPath);
             var memory = new MemoryStream();
             using (var stream = new FileStream(filepath, FileMode.Open))
             {

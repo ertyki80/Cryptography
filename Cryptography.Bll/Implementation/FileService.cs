@@ -74,5 +74,21 @@ namespace Cryptography.Bll.Implementation
             await File.WriteAllTextAsync(outPath, encryptedText);
             return  webRootPath + "\\EncryptedFiles\\" + fileName;
         }
+
+        public async Task<string> GetBruteForceCaesarCipherDecryptedFile(string fileName, string webRootPath)
+        {
+            string inputPath = webRootPath + "/UploadedFiles/" + fileName;
+            string text = await File.ReadAllTextAsync(inputPath);
+            List<BruteForceModel> bruteForceModels = await _caesarCipher.BruteForce(text);
+            string outPath = webRootPath + "/EncryptedFiles/" + fileName;
+            string encryptedText = null;
+            foreach (var item in bruteForceModels)
+            {
+                encryptedText += "Shift: "+item.ShiftChar+'\n';
+                encryptedText += "Content:\n"+item.Content+'\n';
+            }
+            await File.WriteAllTextAsync(outPath, encryptedText);
+            return  webRootPath + "\\EncryptedFiles\\" + fileName;
+        }
     }
 }

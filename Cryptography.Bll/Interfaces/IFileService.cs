@@ -12,6 +12,7 @@ namespace Cryptography.Bll.Interfaces
         Task<string> GetFileContent(string fileName,string webRootPath);
         Task<string> GetCaesarCipherEncryptedFile(string fileName,string webRootPath,int key);
         Task<string> GetCaesarCipherDecryptedFile(string fileName,string webRootPath,int key);
+        Task<string> GetBruteForceCaesarCipherDecryptedFile(string fileName,string webRootPath);
 
     }
 }
