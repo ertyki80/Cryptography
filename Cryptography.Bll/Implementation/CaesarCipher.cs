@@ -43,7 +43,7 @@ namespace Cryptography.Bll.Implementation
 
             for (int shift = 0; shift < letters.Length; shift++)
             {
-                StringBuilder stringBuilder = new StringBuilder();
+                StringBuilder stringBuilder = new();
                 foreach (char inputChar in input.ToLower())
                 {
                     if (letters.Contains(inputChar))
@@ -94,18 +94,16 @@ namespace Cryptography.Bll.Implementation
 
         private async Task<bool> CheckWords(string input)
         {
-            int wordCounter = 0;
             int rightCounter = 0;
             foreach (string s in input.Split(" "))
             {
-                wordCounter++;
 
                 if (_textForSearch.Contains(s.ToLower()))
                 {
                     rightCounter++;
                 }
 
-                if (wordCounter == 20 && rightCounter > 15)
+                if (rightCounter >= input.Split(" ").Length / 2)
                 {
                     return true;
                 }

@@ -10,16 +10,10 @@ namespace Cryptography.Bll.Implementation
 {
     public class FileService : IFileService
     {
-        private ICaesarCipher _caesarCipher;
-
-        public FileService(ICaesarCipher caesarCipher)
-        {
-            _caesarCipher = caesarCipher;
-        }
         public async Task SaveFile(IFormFile uploadedFile, string webRootPath)
         {
             var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            Random random = new Random();
+            Random random = new();
             if (Path.GetExtension(uploadedFile.FileName) != ".txt")
             {
                 return;
@@ -27,10 +21,8 @@ namespace Cryptography.Bll.Implementation
             var fileName =Path.GetFileNameWithoutExtension(uploadedFile.FileName)+"__V1"+chars[random.Next(chars.Length)];
             fileName += Path.GetExtension(uploadedFile.FileName);
             string path = "/UploadedFiles/" +fileName;
-            using (var fileStream = new FileStream(webRootPath + path, FileMode.Create))
-            {
-                await uploadedFile.CopyToAsync(fileStream);
-            }
+            await using FileStream fileStream = new(webRootPath + path, FileMode.Create);
+            await uploadedFile.CopyToAsync(fileStream);
         }
 
         public List<FileModel> GetFiles(string webRootPath)
@@ -51,44 +43,6 @@ namespace Cryptography.Bll.Implementation
             string path = webRootPath + "/UploadedFiles/" + fileName;
             string text = await File.ReadAllTextAsync(path);
             return text;
-        }
-
-        public async Task<string> GetCaesarCipherEncryptedFile(string fileName, string webRootPath, int key)
-        {
-            string inputPath = webRootPath + "/UploadedFiles/" + fileName;
-            string text = await File.ReadAllTextAsync(inputPath);
-            string encryptedText = _caesarCipher.Encipher(text, key);
-            string outPath = webRootPath + "/EncryptedFiles/" + fileName;
-            
-            await File.WriteAllTextAsync(outPath, encryptedText);
-            return  webRootPath + "\\EncryptedFiles\\" + fileName;
-        }
-
-        public async Task<string> GetCaesarCipherDecryptedFile(string fileName, string webRootPath, int key)
-        {
-            string inputPath = webRootPath + "/UploadedFiles/" + fileName;
-            string text = await File.ReadAllTextAsync(inputPath);
-            string encryptedText = _caesarCipher.Decipher(text, key);
-            string outPath = webRootPath + "/EncryptedFiles/" + fileName;
-            
-            await File.WriteAllTextAsync(outPath, encryptedText);
-            return  webRootPath + "\\EncryptedFiles\\" + fileName;
-        }
-
-        public async Task<string> GetBruteForceCaesarCipherDecryptedFile(string fileName, string webRootPath)
-        {
-            string inputPath = webRootPath + "/UploadedFiles/" + fileName;
-            string text = await File.ReadAllTextAsync(inputPath);
-            List<BruteForceModel> bruteForceModels = await _caesarCipher.BruteForce(text);
-            string outPath = webRootPath + "/EncryptedFiles/" + fileName;
-            string encryptedText = null;
-            foreach (var item in bruteForceModels)
-            {
-                encryptedText += "Shift: "+item.ShiftChar+'\n';
-                encryptedText += "Content:\n"+item.Content+'\n';
-            }
-            await File.WriteAllTextAsync(outPath, encryptedText);
-            return  webRootPath + "\\EncryptedFiles\\" + fileName;
         }
     }
 }

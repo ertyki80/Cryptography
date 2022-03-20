@@ -15,7 +15,7 @@ namespace Cryptography.Web
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -23,6 +23,8 @@ namespace Cryptography.Web
             services.AddMvc();
             services.AddTransient<IFileService, FileService>();
             services.AddTransient<ICaesarCipher, CaesarCipher>();
+            services.AddTransient<ICaesarCipherService, CaesarCipherService>();
+            services.AddTransient<IAffineCipherService, AffineCipherService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -36,10 +38,16 @@ namespace Cryptography.Web
             app.UseStaticFiles();
             app.UseRouting();
             app.UseCors();
-
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}");
+                endpoints.MapControllers();
+                
+                endpoints.MapControllerRoute(
+                    "default",
+                    "{controller}/{action}/{id?}",
+                    new { controller = "Home", action = "Index" });
+                
+                
             });
         }
     }

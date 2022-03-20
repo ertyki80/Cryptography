@@ -1,0 +1,230 @@
+@model Cryptography.Bll.Models.FileModel
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+<div class="cards">
+    <div class="card-text">
+        <h6>
+            File Name:
+            <br>
+        </h6>
+        @Model.Name
+        <h6>
+            Text:
+            <br>
+        </h6>
+        @Model.Content
+    </div>
+    <br>
+    <div>
+        <div class="card-text-action">
+            <h5>
+                Caesar cipher.
+            </h5>
+            <h6>
+                <input type="number" min="1" max="100" id="caesar-cipher" value="1">
+                <br><br>
+                <button class="button" onclick="CaesarEncipher('@Model.Name')">Encipher</button>
+                <button class="button" onclick="CaesarDecipher('@Model.Name')" >Decipher</button>
+                <button class="button" onclick="CaesarBruteForce('@Model.Name')">Brute force</button>
+            </h6>
+        </div>
+        <div class="card-text-action">
+            <h5>
+                Affine cipher.
+            </h5>
+            <h6>
+                <input type="number" min="1" max="100" id="affine-cipher-one" value="1">
+                <input type="number" min="1" max="100" id="affine-cipher-two" value="1">
+                <br><br>
+                <button class="button" onclick="AffineEncipher('@Model.Name')">Encipher</button>
+                <button class="button" onclick="AffineDecipher('@Model.Name')">Decipher</button>
+                <button class="button" onclick="AffineBruteForce('@Model.Name')">Brute force</button>
+            </h6>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+function CaesarEncipher(FileName){
+    let keyForEncipher = document.getElementById("caesar-cipher").value;
+    if (keyForEncipher == null){
+        keyForEncipher = 1;    
+    }
+    let request = new XMLHttpRequest();
+            request.responseType = "blob";
+            request.open("POST", `${document.location.origin}/file/caesar-cipher/encipher/${FileName}/key/${keyForEncipher}`);
+            request.onload = function() {
+                let url = window.URL.createObjectURL(this.response);
+                let a = document.createElement("a");
+                document.body.appendChild(a);
+                a.href = url;
+                a.download = this.response.name || "download-" + $.now()
+                a.click();
+            }
+    request.send();  
+}
+
+function CaesarDecipher(FileName){
+    let keyForEncipher = document.getElementById("caesar-cipher").value;
+    if (keyForEncipher == null){
+        keyForEncipher = 1;    
+    }
+    let request = new XMLHttpRequest();
+            request.responseType = "blob";
+            request.open("POST", `${document.location.origin}/file/caesar-cipher/decipher/${FileName}/key/${keyForEncipher}`);
+            request.onload = function() {
+                let url = window.URL.createObjectURL(this.response);
+                let a = document.createElement("a");
+                document.body.appendChild(a);
+                a.href = url;
+                a.download = this.response.name || "download-" + $.now()
+                a.click();
+            }
+    request.send();  
+}
+
+function CaesarBruteForce(FileName){
+    let request = new XMLHttpRequest();
+            request.responseType = "blob";
+            request.open("POST", `${document.location.origin}/file/caesar-cipher/brute-force/${FileName}`);
+            request.onload = function() {
+                let url = window.URL.createObjectURL(this.response);
+                let a = document.createElement("a");
+                document.body.appendChild(a);
+                a.href = url;
+                a.download = this.response.name || "download-" + $.now()
+                a.click();
+            }
+    request.send();  
+}
+
+function AffineEncipher(FileName){
+    let keyForEncipherOne = document.getElementById("affine-cipher-one").value;
+    if (keyForEncipherOne == null){
+        keyForEncipherOne = 1;    
+    }
+    
+    let keyForEncipherTwo = document.getElementById("affine-cipher-two").value;
+    if (keyForEncipherTwo == null){
+        keyForEncipherTwo = 1;    
+    }
+        
+    let request = new XMLHttpRequest();
+            request.responseType = "blob";
+            request.open("POST", `${document.location.origin}/file/affine-cipher/encipher/${FileName}/keys/${keyForEncipherOne}/${keyForEncipherTwo}`);
+            request.onload = function() {
+                let url = window.URL.createObjectURL(this.response);
+                let a = document.createElement("a");
+                document.body.appendChild(a);
+                a.href = url;
+                a.download = this.response.name || "download-" + $.now()
+                a.click();
+            }
+    request.send();  
+}
+
+function AffineDecipher(FileName){
+    let keyForEncipherOne = document.getElementById("affine-cipher-one").value;
+        if (keyForEncipherOne == null){
+            keyForEncipherOne = 1;    
+        }
+        
+        let keyForEncipherTwo = document.getElementById("affine-cipher-two").value;
+        if (keyForEncipherTwo == null){
+            keyForEncipherTwo = 1;    
+        }
+            
+        let request = new XMLHttpRequest();
+                request.responseType = "blob";
+                request.open("POST", `${document.location.origin}/file/affine-cipher/decipher/${FileName}/keys/${keyForEncipherOne}/${keyForEncipherTwo}`);
+                request.onload = function() {
+                    let url = window.URL.createObjectURL(this.response);
+                    let a = document.createElement("a");
+                    document.body.appendChild(a);
+                    a.href = url;
+                    a.download = this.response.name || "download-" + $.now()
+                    a.click();
+                }
+        request.send();  
+}
+
+function AffineBruteForce(FileName){
+    let request = new XMLHttpRequest();
+            request.responseType = "blob";
+            request.open("POST", `${document.location.origin}/file/caesar-cipher/brute-force/${FileName}`);
+            request.onload = function() {
+                let url = window.URL.createObjectURL(this.response);
+                let a = document.createElement("a");
+                document.body.appendChild(a);
+                a.href = url;
+                a.download = this.response.name || "download-" + $.now()
+                a.click();
+            }
+    request.send();  
+}
+
+
+</script>
+
+<style>
+    .cards{
+    display: flex;
+    }
+    .card-text{
+        background: #1111;
+        border-radius: 20px;
+        padding: 20px;
+        width: 60%;
+        margin: 10px;
+        height: max-content;
+    }
+    .card-text-action{
+        background: #1111;
+        border-radius: 20px;
+        padding: 20px;
+        width: 100%;
+        margin: 10px;
+        height: max-content;
+    }
+    .button {
+      position: relative;
+      background-color: #4CAF50;
+      border: none;
+      font-size: 14px;
+      color: #FFFFFF;
+      padding: 10px;
+      width: 100px;
+      text-align: center;
+      transition-duration: 0.4s;
+      text-decoration: none;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    
+    .button:after {
+      content: "";
+      background: #f1f1f1;
+      display: block;
+      border: none;
+      position: absolute;
+      padding-top: 300%;
+      padding-left: 350%;
+      margin-left: -20px !important;
+      margin-top: -120%;
+      opacity: 0;
+      transition: all 0.8s
+    }
+    
+    .button:active:after {
+      padding: 0;
+      margin: 0;
+      opacity: 1;
+      border: none;
+      transition: 0s
+    }
+    
+</style>

@@ -1,59 +1,35 @@
+@using Cryptography.Bll.Models
 @model System.Collections.Generic.List<Cryptography.Bll.Models.FileModel>
 
 
 <h2>Folder Files:</h2>
 <table id="table-content">
-    <tr> 
-        <th> File Name </th>
-        <th> Caesar Cipher </th>  
-        <th> Caesar Cipher </th>  
-        <th> Caesar Cipher </th> 
-    </tr> 
-     @foreach (var item in Model){
-            <tr> 
-                <th> @item.Name</th>
-                <th > @Html.ActionLink("Decipher","ProcessFileCaesarCipherDecipher","Home",new { name = item.Name},new { @class = "linkColonm" })</th>  
-                <th > @Html.ActionLink("Encipher","ProcessFileCaesarCipherEncipher","Home",new { name = item.Name},new { @class = "linkColonm" })</th>
-                <th > @Html.ActionLink("Brute Force","ProcessFileBruteForceCaesarCipherDecipher","Home",new { name = item.Name},new { @class = "linkColonm" })</th>
-            </tr>
-     }
+    @foreach (FileModel item in Model){
+        <tr> 
+            <th onclick="GetDetails('@item.Name')">@item.Name</th>
+            @*<th > @Html.ActionLink("Decipher","ProcessFileCaesarCipherDecipher","File",new { name = item.Name},new { @class = "linkColonm" })</th>  
+                <th > @Html.ActionLink("Encipher","ProcessFileCaesarCipherEncipher","File",new { name = item.Name},new { @class = "linkColonm" })</th>
+                <th > @Html.ActionLink("Brute Force","ProcessFileBruteForceCaesarCipherDecipher","File",new { name = item.Name},new { @class = "linkColonm" })</th>*@
+        </tr>
+    }
 </table>
-<style>
+<script>
+function GetDetails(name){
+    document.location.href = document.location.origin + '/file/details/'+name.toString();
+}
+</script>
 
-    .linkColonm:link,.linkColonm:visited  {
-      background-color: #1bbc9b;
-      color: white;
-      padding: 14px 25px;
-      text-align: center;
-      text-decoration: none;
-      display: inline-block;
-    }
-    
-    
-    .linkColonm:hover, .linkColonm:active {
-      background-color: #1bbc9b;
-    }
-    
-    #table-content {
-      font-family: Arial, Helvetica, sans-serif;
-      border-collapse: collapse;
-      width: 100%;
-    }
-    
-    #table-content td, #table-content th {
-      border: 1px solid #ddd;
-      padding: 8px;
-    }
-    
-    #table-content tr:nth-child(even){background-color: #f2f2f2;}
-    
-    #table-content tr:hover {background-color: #ddd;}
-    
-    #table-content th {
-      padding-top: 12px;
-      padding-bottom: 12px;
-      text-align: left;
-      background-color: #FFFFFF;
-      color: black;
-    }
+<style>
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #DDD;
+}
+
+tr:hover {background-color: #D6EEEE;}
 </style>

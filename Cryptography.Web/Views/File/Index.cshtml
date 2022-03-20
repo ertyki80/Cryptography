@@ -1,6 +1,6 @@
 ﻿<h3>Select file to encryption</h3>
 <br>
-@using (Html.BeginForm("AddFile", "Home", FormMethod.Post, new {enctype = "multipart/form-data"}))
+@using (Html.BeginForm("AddFile", "File", FormMethod.Post, new {enctype = "multipart/form-data"}))
 {
     <div class="field__wrapper">
         <input type="file" name="uploadedFile" id="field__file-2" class="field field__file" required/>
@@ -9,7 +9,9 @@
             <input type="submit" value="Proccess" class="field__file-button" />
         </label>
     </div>
+    
 }
+
 
 @await Component.InvokeAsync("FolderListingComponent")
 
