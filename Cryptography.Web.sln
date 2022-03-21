@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptography.Web", "Cryptog
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptography.Bll", "Cryptography.Bll\Cryptography.Bll.csproj", "{A0DB093E-B758-4C88-9A46-398E673ED123}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cryptography.Common", "Cryptography.Common\Cryptography.Common.csproj", "{3A9AFC99-C127-4EC6-BCAE-A633CB6A0B02}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{A0DB093E-B758-4C88-9A46-398E673ED123}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0DB093E-B758-4C88-9A46-398E673ED123}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0DB093E-B758-4C88-9A46-398E673ED123}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A9AFC99-C127-4EC6-BCAE-A633CB6A0B02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A9AFC99-C127-4EC6-BCAE-A633CB6A0B02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A9AFC99-C127-4EC6-BCAE-A633CB6A0B02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A9AFC99-C127-4EC6-BCAE-A633CB6A0B02}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

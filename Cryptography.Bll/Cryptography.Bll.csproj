@@ -32,4 +32,8 @@
       <None Remove="obj\**" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Cryptography.Common\Cryptography.Common.csproj" />
+    </ItemGroup>
+
 </Project>

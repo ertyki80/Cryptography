@@ -155,7 +155,7 @@ function AffineDecipher(FileName){
 function AffineBruteForce(FileName){
     let request = new XMLHttpRequest();
             request.responseType = "blob";
-            request.open("POST", `${document.location.origin}/file/caesar-cipher/brute-force/${FileName}`);
+            request.open("POST", `${document.location.origin}/file/affine-cipher/brute-force/${FileName}`);
             request.onload = function() {
                 let url = window.URL.createObjectURL(this.response);
                 let a = document.createElement("a");

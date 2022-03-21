@@ -1,6 +1,6 @@
 namespace Cryptography.Bll.Models
 {
-    public class BruteForceModel
+    public class CaesarCipherBruteForceModel
     {
         public string Content { get; set; }
         public int ShiftChar { get; set; }

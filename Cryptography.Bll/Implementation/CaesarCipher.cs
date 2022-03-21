@@ -13,8 +13,7 @@ namespace Cryptography.Bll.Implementation
         private string _textForSearch;
         public  CaesarCipher()
         {
-            string inputPath = "../Cryptography.Bll/DictionaryEng/words.txt";
-            _textForSearch =  File.ReadAllText(inputPath);
+            _textForSearch =  File.ReadAllText( "../Cryptography.Bll/DictionaryEng/words.txt");
         }
         private static char Cipher(char inputChar, int key)
         {
@@ -35,10 +34,10 @@ namespace Cryptography.Bll.Implementation
             return Encipher(input, 26 - key);
         }
 
-        public async Task<List<BruteForceModel>> BruteForce(string input)
+        public async Task<List<CaesarCipherBruteForceModel>> BruteForce(string input)
         {
-            List<BruteForceModel> fullScan = new List<BruteForceModel>();
-            List<BruteForceModel> rightAnswer = new List<BruteForceModel>();
+            List<CaesarCipherBruteForceModel> fullScan = new List<CaesarCipherBruteForceModel>();
+            List<CaesarCipherBruteForceModel> rightAnswer = new List<CaesarCipherBruteForceModel>();
             string letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToLower();
 
             for (int shift = 0; shift < letters.Length; shift++)
@@ -62,12 +61,12 @@ namespace Cryptography.Bll.Implementation
                     }
                 }
 
-                BruteForceModel model;
+                CaesarCipherBruteForceModel model;
                 var currentWord = stringBuilder.ToString();
                 
                 if (await CheckWords(currentWord))
                 {
-                    model = new BruteForceModel()
+                    model = new CaesarCipherBruteForceModel()
                     {
                         Content = currentWord,
                         ShiftChar = shift
@@ -76,7 +75,7 @@ namespace Cryptography.Bll.Implementation
                     break;
                 }
                
-                model = new BruteForceModel()
+                model = new CaesarCipherBruteForceModel()
                 {
                     Content = currentWord,
                     ShiftChar = shift

@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Cryptography.Bll.Interfaces;
+using Cryptography.Bll.Models;
 
 namespace Cryptography.Bll.Implementation
 {
@@ -28,9 +30,20 @@ namespace Cryptography.Bll.Implementation
             return  webRootPath + "\\EncryptedFiles\\" + fileName;
         }
 
-        public Task<string> BruteForce(string fileName, string webRootPath)
+        public async Task<string> BruteForce(string fileName, string webRootPath)
         {
-            throw new System.NotImplementedException();
+            string inputPath = webRootPath + "/UploadedFiles/" + fileName;
+            string text = await File.ReadAllTextAsync(inputPath);
+            List<AffineCipherBruteForce> bruteForceModels = AffineCipher.BruteForce(text);
+            string outPath = webRootPath + "/EncryptedFiles/" + fileName;
+            string encryptedText = null;
+            foreach (AffineCipherBruteForce item in bruteForceModels)
+            {
+                encryptedText += $"Key first: {item.FirstKey} Key second: {item.SecondKey} \n'";
+                encryptedText += $"Content:\n {item.Content}\n";
+            }
+            await File.WriteAllTextAsync(outPath, encryptedText);
+            return  webRootPath + "\\EncryptedFiles\\" + fileName;
         }
     }
 }

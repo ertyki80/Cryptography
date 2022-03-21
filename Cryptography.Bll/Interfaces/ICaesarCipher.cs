@@ -8,6 +8,6 @@ namespace Cryptography.Bll.Interfaces
     {
         string Encipher(string input, int key);
         string Decipher(string input, int key);
-        Task<List<BruteForceModel>>  BruteForce(string input);
+        Task<List<CaesarCipherBruteForceModel>>  BruteForce(string input);
     }
 }

@@ -42,10 +42,10 @@ namespace Cryptography.Bll.Implementation
         {
             string inputPath = webRootPath + "/UploadedFiles/" + fileName;
             string text = await File.ReadAllTextAsync(inputPath);
-            List<BruteForceModel> bruteForceModels = await _caesarCipher.BruteForce(text);
+            List<CaesarCipherBruteForceModel> bruteForceModels = await _caesarCipher.BruteForce(text);
             string outPath = webRootPath + "/EncryptedFiles/" + fileName;
             string encryptedText = null;
-            foreach (BruteForceModel item in bruteForceModels)
+            foreach (CaesarCipherBruteForceModel item in bruteForceModels)
             {
                 encryptedText += "Shift: "+item.ShiftChar+'\n';
                 encryptedText += "Content:\n"+item.Content+'\n';
