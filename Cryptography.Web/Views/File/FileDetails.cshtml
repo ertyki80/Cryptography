@@ -24,7 +24,7 @@
             </h5>
             <h6>
                 <input type="number" min="1" max="100" id="caesar-cipher" value="1">
-                <br><br>
+                <br>(Key example: 3) <br>
                 <button class="button" onclick="CaesarEncipher('@Model.Name')">Encipher</button>
                 <button class="button" onclick="CaesarDecipher('@Model.Name')" >Decipher</button>
                 <button class="button" onclick="CaesarBruteForce('@Model.Name')">Brute force</button>
@@ -37,10 +37,33 @@
             <h6>
                 <input type="number" min="1" max="100" id="affine-cipher-one" value="1">
                 <input type="number" min="1" max="100" id="affine-cipher-two" value="1">
-                <br><br>
+                <br>(Key example: 1,2) <br>
                 <button class="button" onclick="AffineEncipher('@Model.Name')">Encipher</button>
                 <button class="button" onclick="AffineDecipher('@Model.Name')">Decipher</button>
                 <button class="button" onclick="AffineBruteForce('@Model.Name')">Brute force</button>
+            </h6>
+        </div>
+        <div class="card-text-action">
+            <h5>
+                Cardano cipher.
+            </h5>
+            <h6>
+                <input type="text" min="1" max="100" id="cardano-cipher-one" value="1">
+                <br>(Key example: 1f84) <br>
+                <button class="button" onclick="CardanoEncipher('@Model.Name')">Encipher</button>
+                <button class="button" onclick="CardanoDecipher('@Model.Name')">Decipher</button>
+                <button class="button" onclick="CardanoBruteForce('@Model.Name')">Brute force</button>
+            </h6>
+        </div>
+        <div class="card-text-action">
+            <h5>
+                Vigenere cipher.
+            </h5>
+            <h6>
+                <input type="text" min="1" max="100" id="vigener-cipher-one" value="1">
+                <br>(Key example: abcd) <br>
+                <button class="button" onclick="VigenereEncipher('@Model.Name')">Encipher</button>
+                <button class="button" onclick="VigenereDecipher('@Model.Name')">Decipher</button>
             </h6>
         </div>
     </div>
@@ -168,6 +191,100 @@ function AffineBruteForce(FileName){
 }
 
 
+function CardanoEncipher(FileName){
+    let keyForEncipherOne = document.getElementById("cardano-cipher-one").value;
+    if (keyForEncipherOne == null){
+        keyForEncipherOne = 1;    
+    }
+    
+    let request = new XMLHttpRequest();
+            request.responseType = "blob";
+            request.open("POST", `${document.location.origin}/file/cardano-cipher/encipher/${FileName}/keys/${keyForEncipherOne}`);
+            request.onload = function() {
+                let url = window.URL.createObjectURL(this.response);
+                let a = document.createElement("a");
+                document.body.appendChild(a);
+                a.href = url;
+                a.download = this.response.name || "download-" + $.now()
+                a.click();
+            }
+    request.send();  
+}
+
+function CardanoDecipher(FileName){
+    let keyForEncipherOne = document.getElementById("cardano-cipher-one").value;
+        if (keyForEncipherOne == null){
+            keyForEncipherOne = 1;    
+        }
+            
+        let request = new XMLHttpRequest();
+                request.responseType = "blob";
+                request.open("POST", `${document.location.origin}/file/cardano-cipher/decipher/${FileName}/keys/${keyForEncipherOne}`);
+                request.onload = function() {
+                    let url = window.URL.createObjectURL(this.response);
+                    let a = document.createElement("a");
+                    document.body.appendChild(a);
+                    a.href = url;
+                    a.download = this.response.name || "download-" + $.now()
+                    a.click();
+                }
+        request.send();  
+}
+
+function CardanoBruteForce(FileName){
+    let request = new XMLHttpRequest();
+            request.responseType = "blob";
+            request.open("POST", `${document.location.origin}/file/cardano-cipher/brute-force/${FileName}`);
+            request.onload = function() {
+                let url = window.URL.createObjectURL(this.response);
+                let a = document.createElement("a");
+                document.body.appendChild(a);
+                a.href = url;
+                a.download = this.response.name || "download-" + $.now()
+                a.click();
+            }
+    request.send();  
+}
+
+function VigenereEncipher(FileName){
+    let keyForEncipherOne = document.getElementById("vigener-cipher-one").value;
+    if (keyForEncipherOne == null){
+        keyForEncipherOne = 1;    
+    }
+    
+    let request = new XMLHttpRequest();
+            request.responseType = "blob";
+            request.open("POST", `${document.location.origin}/file/vigenere-cipher/encipher/${FileName}/keys/${keyForEncipherOne}`);
+            request.onload = function() {
+                let url = window.URL.createObjectURL(this.response);
+                let a = document.createElement("a");
+                document.body.appendChild(a);
+                a.href = url;
+                a.download = this.response.name || "download-" + $.now()
+                a.click();
+            }
+    request.send();  
+}
+
+function VigenereDecipher(FileName){
+    let keyForEncipherOne = document.getElementById("vigener-cipher-one").value;
+        if (keyForEncipherOne == null){
+            keyForEncipherOne = 1;    
+        }
+            
+        let request = new XMLHttpRequest();
+                request.responseType = "blob";
+                request.open("POST", `${document.location.origin}/file/vigenere-cipher/decipher/${FileName}/keys/${keyForEncipherOne}`);
+                request.onload = function() {
+                    let url = window.URL.createObjectURL(this.response);
+                    let a = document.createElement("a");
+                    document.body.appendChild(a);
+                    a.href = url;
+                    a.download = this.response.name || "download-" + $.now()
+                    a.click();
+                }
+        request.send();  
+}
 </script>
 
 <style>

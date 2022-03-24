@@ -12,13 +12,20 @@ namespace Cryptography.Web.Controllers
         private readonly ICaesarCipherService _caesarCipherService;
         private readonly IAffineCipherService _affineCipherService;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IVigenereCipherService _vigenereCipherService;
+        private readonly ICardanoCipherService _cardanoCipherService;
         
-        
-        public CryptographyController( IFileService fileService,IWebHostEnvironment webHostEnvironment, ICaesarCipherService caesarCipherService, IAffineCipherService affineCipherService)
+        public CryptographyController(
+            IWebHostEnvironment webHostEnvironment, 
+            ICaesarCipherService caesarCipherService,
+            IAffineCipherService affineCipherService,
+            ICardanoCipherService cardanoCipherService, IVigenereCipherService vigenereCipherService)
         {
             _webHostEnvironment = webHostEnvironment;
             _caesarCipherService = caesarCipherService;
             _affineCipherService = affineCipherService;
+            _cardanoCipherService = cardanoCipherService;
+            _vigenereCipherService = vigenereCipherService;
         }
 
         #region caesar
@@ -121,6 +128,89 @@ namespace Cryptography.Web.Controllers
         }
         #endregion
         
+        #region cardano
+        [HttpPost]
+        [Route("file/cardano-cipher/encipher/{inputFileName}/keys/{keyone}")]
+        public async Task<ActionResult > CardanoEncrypt([FromRoute] string inputFileName,[FromRoute] string keyone)
+        {
+            string filepath =
+                await _cardanoCipherService.Encode(inputFileName, _webHostEnvironment.WebRootPath, keyone);
+            MemoryStream memory = new();
+            using (FileStream stream = new(filepath, FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            var ext = Path.GetExtension(filepath).ToLowerInvariant();
+            return File(memory, GetMimeTypes()[ext], Path.GetFileName(filepath));
+        }
+        
+        [HttpPost]
+        [Route("file/cardano-cipher/decipher/{inputFileName}/keys/{keyone}")]
+        public async Task<ActionResult > CardanoDecipher([FromRoute] string inputFileName,[FromRoute] string keyone)
+        {
+            string filepath =
+                await _cardanoCipherService.Decode(inputFileName , _webHostEnvironment.WebRootPath, keyone);
+            MemoryStream memory = new();
+            using (FileStream stream = new(filepath, FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            var ext = Path.GetExtension(filepath).ToLowerInvariant();
+            return File(memory, GetMimeTypes()[ext], Path.GetFileName(filepath));
+        }
+        
+        [HttpPost]
+        [Route("file/cardano-cipher/brute-force/{inputFileName}")]
+        public async Task<ActionResult> CardanBruteForce([FromRoute] string inputFileName)
+        {
+            string filepath =
+                await _cardanoCipherService.BruteForce(inputFileName , _webHostEnvironment.WebRootPath);
+            MemoryStream memory = new();
+            await using (FileStream stream = new(filepath, FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            var ext = Path.GetExtension(filepath).ToLowerInvariant();
+            return File(memory, GetMimeTypes()[ext], Path.GetFileName(filepath));
+        }
+        #endregion
+        
+        #region vigenere
+        [HttpPost]
+        [Route("file/vigenere-cipher/encipher/{inputFileName}/keys/{keyone}")]
+        public async Task<ActionResult > VigenereEncrypt([FromRoute] string inputFileName,[FromRoute] string keyone)
+        {
+            string filepath =
+                await _vigenereCipherService.Encode(inputFileName, _webHostEnvironment.WebRootPath, keyone);
+            MemoryStream memory = new();
+            using (FileStream stream = new(filepath, FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            var ext = Path.GetExtension(filepath).ToLowerInvariant();
+            return File(memory, GetMimeTypes()[ext], Path.GetFileName(filepath));
+        }
+        
+        [HttpPost]
+        [Route("file/vigenere-cipher/decipher/{inputFileName}/keys/{keyone}")]
+        public async Task<ActionResult > VigenereDecipher([FromRoute] string inputFileName,[FromRoute] string keyone)
+        {
+            string filepath =
+                await _vigenereCipherService.Decode(inputFileName , _webHostEnvironment.WebRootPath, keyone);
+            MemoryStream memory = new();
+            using (FileStream stream = new(filepath, FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            var ext = Path.GetExtension(filepath).ToLowerInvariant();
+            return File(memory, GetMimeTypes()[ext], Path.GetFileName(filepath));
+        }
+        #endregion
         private Dictionary<string, string> GetMimeTypes()
         {
             return new Dictionary<string, string>

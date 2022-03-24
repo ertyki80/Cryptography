@@ -25,6 +25,8 @@ namespace Cryptography.Web
             services.AddTransient<ICaesarCipher, CaesarCipher>();
             services.AddTransient<ICaesarCipherService, CaesarCipherService>();
             services.AddTransient<IAffineCipherService, AffineCipherService>();
+            services.AddTransient<ICardanoCipherService, CardanoCipherService>();
+            services.AddTransient<IVigenereCipherService, VigenereCipherService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

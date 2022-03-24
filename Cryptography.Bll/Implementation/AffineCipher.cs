@@ -7,96 +7,138 @@ using Cryptography.Bll.Models;
 
 namespace Cryptography.Bll.Implementation
 {
-    public static class AffineCipher
+    public class AffineCipher
     {
-        private static string _textForSearch;
-        private const int Alphabet = 26;
-        private const int ChunkSize = 5;
-
-        static AffineCipher()
+        private string _textForSearch;
+        private readonly char[] _alphabetEnglishLover = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
+        private readonly char[] _alphabetEnglishUpper = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
+        private char[] cipherArr_en;
+        private char[] cipherArr_EN;
+        private readonly int[] alphaArr = { 1, 3, 5, 7, 9, 11, 15, 17, 19, 21, 23, 25 };
+        private readonly int[] betaArr = Enumerable.Range(0, 26).ToArray();
+        public void Initialize(int alpha, int beta)
         {
             _textForSearch =  File.ReadAllText( "../Cryptography.Bll/DictionaryEng/words.txt");
-        }
-        
-        public static string Encode(string plainText, int a, int b)
-        {
-            if(!IsCoprime(a, Alphabet)) 
-                throw new ArgumentException("Numbers must be coprime");
-            var encoded = plainText.ToLower().Where(char.IsLetterOrDigit)
-                .Select(x => char.IsDigit(x) ? x : ToChar((a * Index(x) + b) % Alphabet));
-            
-            return string.Join(" ", encoded.Chunk(ChunkSize).Select(x => new string(x.ToArray())));
-        }
-        private static IEnumerable<IEnumerable<char>> Chunk(this IEnumerable<char> source, int size)
-        {
-            var enumerable = source as char[] ?? source.ToArray();
-            while(enumerable.Any())
+            cipherArr_en = (char[])_alphabetEnglishLover.Clone();
+            cipherArr_EN = (char[])(_alphabetEnglishUpper.Clone());
+            for (int i = 0; i < _alphabetEnglishLover.Length; i++)
             {
-                yield return enumerable.Take(size);
-                source = enumerable.Skip(size);
+                cipherArr_en[(i * alpha + beta) % _alphabetEnglishLover.Length] = _alphabetEnglishLover[i];
+                cipherArr_EN[(i * alpha + beta) % _alphabetEnglishUpper.Length] = _alphabetEnglishUpper[i];
             }
-        }
-        public static string Decode(string cipheredText, int a, int b)
-        {
-            if(!IsCoprime(a, Alphabet))
-                throw new ArgumentException("Numbers must be coprime");
-            return new string(cipheredText.Where(char.IsLetterOrDigit)
-                .Select(x => char.IsDigit(x) ? x : DecodeSymbol(x, a, b))
-                .ToArray());
-        }
 
-        public static List<AffineCipherBruteForce> BruteForce(string cipherText)
+        }
+        public string Decode(string codeStream)
         {
-            List<AffineCipherBruteForce> result = new List<AffineCipherBruteForce>();
-            for (int i = 1; i < 26; i++)
+            string code = codeStream;
+            string decoded = "";
+            for (int i = 0; i < code.Length; i++)
             {
-                for (int j = 1; j < 26; j++)
+                if (_alphabetEnglishLover.Contains(code[i]) || _alphabetEnglishUpper.Contains(code[i]))
                 {
-                    if (!IsCoprime(i, Alphabet)) continue;
-                    string decodedText = Encode(cipherText, i, j);
-                    result.Add(
-                        new AffineCipherBruteForce
-                        {
-                            Content = decodedText,
-                            FirstKey = i,
-                            SecondKey = j
-                        });
-                    if (CheckWords(decodedText))
-                    {
-                        return result;
-                    }
+                    decoded += cipherArr_en.Contains(code[i]) ? _alphabetEnglishLover[cipherArr_en.ToList().IndexOf(code[i])] : _alphabetEnglishUpper[cipherArr_EN.ToList().IndexOf(code[i])];
+                }
+                else
+                {
+                    decoded += code[i];
                 }
             }
-            return result;
+            return decoded;
+        }
+
+        public string Encode(string textStream)
+        {
+            string text = textStream;
+            string encoded = "";
+            for (int i = 0; i < text.Length; i++)
+            {
+                if (_alphabetEnglishLover.Contains(text[i]) || _alphabetEnglishUpper.Contains(text[i]))
+                {
+                    encoded += _alphabetEnglishLover.Contains(text[i]) ? cipherArr_en[_alphabetEnglishLover.ToList().IndexOf(text[i])] : cipherArr_EN[_alphabetEnglishUpper.ToList().IndexOf(text[i])];
+                }
+                else
+                {
+                    encoded += text[i];
+                }
+            }
+            return encoded;
         }
         
-        private static bool CheckWords(string input)
+        public async Task<List<AffineCipherBruteForce>> BruteForce(string plainText)
+        {
+            List<AffineCipherBruteForce> bruteForces = new List<AffineCipherBruteForce>();
+            string decodedText;
+            string lowerCaseCode = plainText.ToLower();
+            
+            foreach (int alpha in alphaArr)
+            {
+                foreach (int beta in betaArr)
+                {
+                    
+                    calculateCipherArr_en(alpha, beta);
+                    decodedText = AnotherDecode(lowerCaseCode);
+                    
+                    AffineCipherBruteForce result = new()
+                    {
+                        Content = decodedText,
+                        FirstKey = alpha,
+                        SecondKey = beta
+                    };
+                    bruteForces.Add(result);
+                    if (await CheckWords(decodedText))
+                    {
+                        List<AffineCipherBruteForce> rightResult = new List<AffineCipherBruteForce>();
+                        rightResult.Add(result);
+                        return rightResult;
+                    }
+                    
+                }
+            }
+            return bruteForces;
+        }
+        
+        private void calculateCipherArr_en(int alpha, int beta)
+        {
+            this.cipherArr_en = (char[])(_alphabetEnglishLover.Clone());
+            for (int i = 0; i < _alphabetEnglishLover.Length; i++)
+            {
+                cipherArr_en[(i * alpha + beta) % _alphabetEnglishLover.Length] = _alphabetEnglishLover[i];
+            }
+        }
+        private async Task<bool> CheckWords(string input)
         {
             int rightCounter = 0;
             foreach (string s in input.Split(" "))
             {
+
                 if (_textForSearch.Contains(s.ToLower()))
                 {
                     rightCounter++;
                 }
 
-                if (rightCounter >= input.Split(" ").Length / 2)
+                if (rightCounter >= input.Split(" ").Length)
                 {
                     return true;
                 }
             }
+
             return false;
         }
-        
-        private static char DecodeSymbol(char c, int a, int b) 
+        private string AnotherDecode(string lowerCaseCode)
         {
-            var value = Mmi(a) * (Index(c) - b) % Alphabet;
-            if(value < 0) value += Alphabet;
-            return ToChar(value);
+            string decodedText = "";
+            for (int i = 0; i < lowerCaseCode.Length; i++)
+            {
+                if (_alphabetEnglishLover.Contains(lowerCaseCode[i]))
+                {
+                    decodedText += _alphabetEnglishLover[cipherArr_en.ToList().IndexOf(lowerCaseCode[i])];
+                }
+                else
+                {
+                    decodedText += lowerCaseCode[i];
+                }
+            }
+            return decodedText;
         }
-        private static int Mmi(int a) => Enumerable.Range(1, Alphabet).First(x => (a * x % Alphabet) == 1);
-        private static int Index(char c) => c - 'a';
-        private static char ToChar(int i) => (char)('a' + i);
-        private static bool IsCoprime(int a, int m) => a == 0 ? m == 1 : IsCoprime(m % a, a);
     }
 }

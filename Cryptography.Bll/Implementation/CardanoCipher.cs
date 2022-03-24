@@ -1,287 +1,184 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
-using Cryptography.Bll.Extensions;
-using Cryptography.Common.Enums;
-using Cryptography.Common.Models;
 
 namespace Cryptography.Bll.Implementation
 {
-    public class CardanoCipher
+    public static class CardanoCipher
     {
-         public static Cipher GenerateCardanoGrid(int cipherLength, RotationMethod rotationMethod, GridType gridType)
+        private readonly static int[] holePosition = new int[4];
+        private readonly  static char[] arr_en =
         {
-            int edge1=0;
-            int edge2=0;
-
-            int newMessageLength = 0;
-
-            switch (gridType)
+            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+            '.', ',', '-', '!', '?', ' '
+        };
+        
+        public static void  Initialize(string key)
+        {
+            for (int i = 0; i < holePosition.Length; i++)
             {
-                case GridType.Square:
-                    var edge = Math.Sqrt(cipherLength);
-                    if (edge % 1 != 0)
-                    {
-                        foreach (var square in Enumerable.Range(2, 100).Where((x) => x % 2 == 0)
-                            .Select(x => new long[] {x, x * x}))
-                        {
-                            if (square[1] <= cipherLength) continue;
-
-                            edge = square[0];
-                            break;
-                        }
-                    }
-
-                    if (edge % 2 != 0)
-                        edge++;
-
-                    edge1 = Convert.ToInt32(edge);
-                    edge2 = edge1;
-                    break;
-                case GridType.Rect:
-                    var tail = cipherLength % 2;
-                    if (tail != 0)
-                        cipherLength += tail;
-
-                    edge1 = 2;
-                    edge2 = cipherLength / 2;
-                    if (edge2 % 2 != 0)
-                        edge2++;
-
-                    while (edge2 / edge1 > 4)
-                    {
-                        edge2 /= 2;
-                        edge1 *= 2;
-                    }
-
-                    if (edge2 == edge1)
-                    {
-                        edge1 /= 2;
-                        edge2 *= 2;
-                    }
-                    if (edge2 % 2 != 0)
-                        edge2++;
-
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(gridType), gridType, null);
+                holePosition[i] = GetHolePosition(key[i]);
             }
-            newMessageLength = edge1 * edge2;
-
-            var cardanoGrid = new int[edge1, edge2];
-            Random rnd = new();
-
-            for (int a = 0; a < newMessageLength/4; a++)
-            {
-                var availableRowsNumbersArray =
-                    Enumerable.Range(0, edge1)
-                        .Where((n) => cardanoGrid.GetRow(n).Contains(0)).ToArray();
-
-                var randomRow = availableRowsNumbersArray[rnd.Next(0, availableRowsNumbersArray.Length - 1)];
-
-                try
-                {
-                    var currentRow = cardanoGrid.GetRow(randomRow);
-                    var possibilityArray = Enumerable.Range(0, edge2 )
-                        .Where((n) => currentRow[n] == 0).ToArray();
-
-                    var rndInt = possibilityArray[rnd.Next(0, possibilityArray.Length - 1)];
-
-                    var j = 1;
-                    cardanoGrid[randomRow, rndInt] = 1;
-                    do
-                    {
-                        switch (rotationMethod)
-                        {
-                            case RotationMethod.StraightAngle:
-                                if (gridType is GridType.Rect) goto case RotationMethod.OpenAngle;
-                                cardanoGrid.Rotate90Clockwise();
-                                break;
-                            case RotationMethod.OpenAngle:
-                                if(j % 2 == 0)
-                                    cardanoGrid.ReverseColumns();
-                                else
-                                    cardanoGrid.ReverseRows();
-                                break;
-                        }
-                        cardanoGrid[randomRow, rndInt] = -1;
-                        j++;
-                    } while (j < 4);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                }
-            }
-
-            return new Cipher() {CipherGrid = cardanoGrid, RotationMethod = rotationMethod, GridType = gridType};
         }
-
-        private static int[,] GenerateRectangleGrid(int cipherLength)
+         
+        private static int GetHolePosition(char keyPart) => keyPart switch
         {
-            throw new Exception();
+            '1' => 3,
+            '2' => 2,
+            '4' => 1,
+            '8' => 0,
+            _ => -1
+        };
+        
+        public static string Decode(string plainText)
+        {
+            string decoded = "";
+            char[,] charMatr = new char[4, 4];
+            int temp = 0;
+            while (plainText.Length > temp)
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    for (int j = 0; j < 4; j++)
+                    {
+                        if (plainText.Length > temp)
+                        {
+                            charMatr[i, j] = plainText[temp];
+                            temp += 1;
+                        }
+                        else
+                        {
+                            charMatr[i, j] = '\0';
+                        }
+                    }
+                }
+                for (int i = 0; i < 4; i++)
+                {
+                    for (int j = 0; j < 4; j++)
+                    {
+                        if (holePosition[j] != -1)
+                        {
+                            decoded += charMatr[j, holePosition[j]];
+                        }
+                    }
+                    charMatr = Rotation(charMatr);
+                }
+            }
+            return decoded;
         }
         
-         public static void CipherFileWithCardano(string filePath, RotationMethod rotationMethod, GridType gridType)
+        public static string Encode(string plainText)
         {
-            var fileDirectory = Path.GetDirectoryName(filePath);
-            var plainText = ReadTextFromFile(filePath);
+            string encoded = "";
+            char[,] charMatr = new char[4, 4];
+            Random random = new();
 
-            Console.WriteLine(plainText);
-
-            Cipher cipherObj = GenerateCardanoGrid(plainText.Length, rotationMethod, gridType);
-            var cipher = cipherObj.CipherGrid;
-
-            cipher.PrintArray();
-
-            var cipherLength = cipher.GetLength(0) * cipher.GetLength(1);
-
-            var sub = cipherLength - plainText.Length;
-            if (sub != 0)
-               plainText = plainText
-                   .PadLeft(plainText.Length + (sub / 2), ' ')
-                   .PadRight(plainText.Length + sub, ' ');
-
-            var plainTextQueue = new Queue<char>(plainText.ToArray());
-
-            char [,] cipheredText = new char [cipher.GetLength(0), cipher.GetLength(1)];
-
-
-            for (int i = 0; i < 4; i++)
+            int temp = 0;
+            while (plainText.Length > temp)
             {
-                for (int j = 0; j < cipher.GetLength(0); j++)
+                for (int i = 0; i < 4; i++)
                 {
-                    for (int n = 0; n < cipher.GetLength(1); n++)
+                    for (int j = 0; j < 4; j++)
                     {
-                        if (cipher[j, n] == 1)
-                            cipheredText[j, n] = plainTextQueue.Dequeue();
+                        if (holePosition[j] != -1 && plainText.Length > temp)
+                        {
+                            charMatr[j, holePosition[j]] = plainText[temp];
+                            temp += 1;
+                        }
+                    }
+                    charMatr = Rotation(charMatr);
+                }
+                for (int i = 0; i < 4; i++)
+                {
+                    for (int j = 0; j < 4; j++)
+                    {
+                        if (charMatr[i, j] == '\0')
+                        {
+                            encoded += arr_en[random.Next() % arr_en.Length];
+                        }
+                        else
+                        {
+                            encoded += charMatr[i, j];
+                        }
                     }
                 }
-
-                switch (rotationMethod)
-                {
-                    case RotationMethod.StraightAngle:
-                        if (gridType is GridType.Rect) goto case RotationMethod.OpenAngle;
-                        cipher.Rotate90Clockwise();
-                        break;
-                    case RotationMethod.OpenAngle:
-                        if(i % 2 == 0)
-                            cipher.ReverseColumns();
-                        else
-                            cipher.ReverseRows();
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(rotationMethod), rotationMethod, null);
-                }
+                charMatr = new char[4, 4];
             }
-
-            cipheredText.PrintArray();
-
-            string cipheredString = "";
-
-            for (int j = 0; j < cipher.GetLength(0); j++)
-            {
-                for (int n = 0; n < cipher.GetLength(1); n++)
-                {
-                    cipheredString += cipheredText[j, n];
-                }
-            }
-
-            Console.WriteLine(cipheredString);
-
-            WriteCipherKeyToFile(fileDirectory + "key.bin", cipherObj);
-
-            WriteTextToFile(fileDirectory + "ciphertext.txt", cipheredString);
-
+            return encoded;
         }
 
-        public static void DecipherTextUsingKey(string keyPath, string cipheredTextPath)
+        public static string BruteForce(string plainText,string resultMustBe)
         {
-            Cipher cipherObj = ReadCipherKeyFromFile(keyPath);
+            string decodedText = "";
+            string data = resultMustBe;
+            string result = "";
+            result += "We know that text start with:\n____________________\n" + data + "\n____________________";
+            int[] holePosition = new int[4];
+            char[,] charMatr = new char[4, 4];
+            string key = "";
 
-            var cipher = cipherObj.CipherGrid;
-
-            cipher.PrintArray();
-
-            var cipheredText = ReadTextFromFile(cipheredTextPath);
-
-            var cipheredTextArray = new char[cipher.GetLength(0),cipher.GetLength(1)];
-
-            var cipheredTextQueue = new Queue<char>(cipheredText.ToArray());
-
-            for (int j = 0; j < cipher.GetLength(0); j++)
-            {
-                for (int n = 0; n < cipher.GetLength(1); n++)
-                {
-                    cipheredTextArray[j, n] = cipheredTextQueue.Dequeue();
-                }
-            }
-
-            cipheredTextArray.PrintArray();
-
-            var decipheredString = "";
+            int temp = 0;
             for (int i = 0; i < 4; i++)
             {
-                for (int j = 0; j < cipher.GetLength(0); j++)
+                for (int j = 0; j < 4; j++)
                 {
-                    for (int n = 0; n < cipher.GetLength(1); n++)
+                    if (plainText.Length > temp)
                     {
-                        if (cipher[j, n] == 1)
-                            decipheredString += cipheredTextArray[j, n];
+                        charMatr[i, j] = plainText[temp];
+                        temp += 1;
                     }
-                }
-
-                switch (cipherObj.RotationMethod)
-                {
-                    case RotationMethod.StraightAngle:
-                        if (cipherObj.GridType is GridType.Rect) goto case RotationMethod.OpenAngle;
-                        cipher.Rotate90Clockwise();
-                        break;
-                    case RotationMethod.OpenAngle:
-                        if(i % 2 == 0)
-                            cipher.ReverseColumns();
-                        else
-                            cipher.ReverseRows();
-                        break;
+                    else
+                    {
+                        charMatr[i, j] = '\0';
+                    }
                 }
             }
 
-            decipheredString = decipheredString.Trim(' ');
-            Console.WriteLine(decipheredString);
-            WriteTextToFile( "plainText.txt",decipheredString);
+            temp = 0;
+            bool zeroRow;
+            for (int i = 0; i < 4; i++)
+            {
+                zeroRow = true;
+                for (int j = 0; j < 4; j++)
+                {
+                    if(charMatr[i,j] == data[temp])
+                    {
+                        key += GetHolePositionKey(j);
+                        temp += 1;
+                        zeroRow = false;
+                        break;
+                    }
+                }
+                if (zeroRow)
+                {
+                    key += GetHolePositionKey(-1);
+                }
+            }
+
+            result +="\nFinded key : " + key;
+            return result;
+        }
+        
+        private static char GetHolePositionKey(int position) => position switch
+        {
+            3 => '1',
+            2 => '2',
+            1 => '4',
+            0 => '8',
+            _ => '0'
+        };
+        
+        private static char[,] Rotation(char[,] matr)
+        {
+            var result = new char[4, 4];
+            for (int i = 0; i < 4; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    result[i, j] = matr[4 - j - 1, i];
+                }
+            }
+            return result;
         }
 
-        private static void WriteTextToFile(string filePath, string text)
-        {
-            FileStream fileStream = File.Open(filePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
-            using StreamWriter bw = new(fileStream);
-            bw.Write(text);
-        }
-
-        private static void WriteCipherKeyToFile(string filePath, Cipher cipher)
-        {
-            FileStream fileStream = File.Open(filePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
-            using BinaryWriter bw = new(fileStream);
-            BinaryFormatter bf = new();
-            bf.Serialize(fileStream, cipher);
-        }
-
-        private static string ReadTextFromFile(string filePath)
-        {
-            FileStream fileStream = File.Open(filePath, FileMode.Open, FileAccess.ReadWrite);
-            using StreamReader bw = new(fileStream);
-            return bw.ReadToEnd();
-        }
-
-        private static Cipher ReadCipherKeyFromFile(string filePath)
-        {
-            FileStream fileStream = File.Open(filePath, FileMode.Open, FileAccess.ReadWrite);
-            using BinaryReader bw = new(fileStream);
-            BinaryFormatter bf = new();
-            Cipher cipher = bf.Deserialize(fileStream) as Cipher;
-            return cipher;
-        }
     }
 }
